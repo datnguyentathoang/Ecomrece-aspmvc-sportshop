@@ -1,119 +1,185 @@
-﻿-- Tạo cơ sở dữ liệu
+﻿-- Create Database
 CREATE DATABASE SportShop;
 GO
 USE SportShop;
 GO
 
--- Bảng phân quyền (vai trò người dùng)
-CREATE TABLE VaiTro (
-    MaVaiTro INT IDENTITY(1,1) PRIMARY KEY,
-    TenVaiTro NVARCHAR(50) NOT NULL UNIQUE
+---------------------------------------------------
+-- 1. SECURITY AND USER MANAGEMENT TABLES
+---------------------------------------------------
+
+-- Role Table (VaiTro)
+CREATE TABLE Roles (
+    RoleId INT IDENTITY(1,1) PRIMARY KEY,
+    RoleName NVARCHAR(50) NOT NULL UNIQUE
 );
-INSERT INTO VaiTro (TenVaiTro)
-VALUES (N'Quản trị viên'), (N'Khách hàng');
+INSERT INTO Roles (RoleName)
+VALUES (N'Administrator'), (N'Customer');
 GO
 
--- Bảng người dùng
-CREATE TABLE NguoiDung (
-    MaNguoiDung INT IDENTITY(1,1) PRIMARY KEY,
-    HoTen NVARCHAR(150),
-    Email NVARCHAR(150) NOT NULL UNIQUE,
-    MatKhau NVARCHAR(255) NOT NULL, -- Mã hoá (BCrypt)
-    MaVaiTro INT NOT NULL FOREIGN KEY REFERENCES VaiTro(MaVaiTro),
-    SoDienThoai NVARCHAR(20),
-    DiaChi NVARCHAR(255),
-    TrangThai BIT DEFAULT 1,
-    NgayTao DATETIME DEFAULT GETDATE(),
-    
-    -- *** CỘT MỚI ĐÃ THÊM ĐỂ LƯU KHÓA CÔNG KHAI RSA ***
-    -- NVARCHAR(MAX) để đảm bảo đủ chỗ cho chuỗi XML của Public Key (khoảng 1000-2000 ký tự)
-    PublicKey NVARCHAR(MAX) NULL 
+-- API Keys Table (ApiKeys)
+CREATE TABLE ApiKeys (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    [Key] NVARCHAR(255) NOT NULL UNIQUE,
+    [Status] BIT DEFAULT 1,
+    [Permissions] NVARCHAR(50) NOT NULL, -- Storing JSON string
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
 );
 GO
 
--- Bảng danh mục sản phẩm
-CREATE TABLE DanhMuc (
-    MaDanhMuc INT IDENTITY(1,1) PRIMARY KEY,
-    TenDanhMuc NVARCHAR(100) NOT NULL,
-    MoTa NVARCHAR(255)
+-- User Table (NguoiDung)
+CREATE TABLE Users (
+    UserId INT IDENTITY(1,1) PRIMARY KEY,
+    FullName NVARCHAR(150),
+    Email NVARCHAR(150) NOT NULL UNIQUE,
+    [Password] NVARCHAR(255) NOT NULL, -- Hashed Password (e.g., BCrypt)
+    RoleId INT NOT NULL,
+    PhoneNumber NVARCHAR(20),
+    [Address] NVARCHAR(255),
+    [Status] BIT DEFAULT 1,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Users_Roles FOREIGN KEY (RoleId)
+        REFERENCES Roles(RoleId)
 );
 GO
 
--- Bảng thương hiệu
-CREATE TABLE ThuongHieu (
-    MaThuongHieu INT IDENTITY(1,1) PRIMARY KEY,
-    TenThuongHieu NVARCHAR(100) NOT NULL
+-- Key Token Model Table (KhoaBaoMatToken)
+CREATE TABLE KeyTokens (
+    KeyTokenId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL UNIQUE,          -- Links to the user
+
+    PrivateKey NVARCHAR(MAX) NOT NULL,   -- Private Key for JWT signing
+    PublicKey NVARCHAR(MAX) NOT NULL,     -- Public Key for JWT verification
+   
+    -- List of used Refresh Tokens (for Replay Attack detection, stored as JSON array)
+    RefreshTokensUsed NVARCHAR(MAX) DEFAULT N'[]',
+
+    -- The current active Refresh Token
+    CurrentRefreshToken NVARCHAR(MAX) NOT NULL,
+   
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_KeyTokens_Users FOREIGN KEY (UserId)
+        REFERENCES Users(UserId)
 );
 GO
 
--- Bảng sản phẩm
-CREATE TABLE SanPham (
-    MaSanPham INT IDENTITY(1,1) PRIMARY KEY,
-    TenSanPham NVARCHAR(150) NOT NULL,
-    MaDanhMuc INT FOREIGN KEY REFERENCES DanhMuc(MaDanhMuc),
-    MaThuongHieu INT FOREIGN KEY REFERENCES ThuongHieu(MaThuongHieu),
-    Gia DECIMAL(18,2) NOT NULL,
-    SoLuongTon INT DEFAULT 0,
-    HinhAnh NVARCHAR(255),
-    MoTa NVARCHAR(MAX),
-    NgayTao DATETIME DEFAULT GETDATE()
+---------------------------------------------------
+-- 2. PRODUCT MANAGEMENT TABLES
+---------------------------------------------------
+
+-- Category Table (DanhMuc)
+CREATE TABLE Categories (
+    CategoryId INT IDENTITY(1,1) PRIMARY KEY,
+    CategoryName NVARCHAR(100) NOT NULL,
+    [Description] NVARCHAR(255)
 );
 GO
 
--- Bảng giỏ hàng
-CREATE TABLE GioHang (
-    MaGioHang INT IDENTITY(1,1) PRIMARY KEY,
-    MaNguoiDung INT FOREIGN KEY REFERENCES NguoiDung(MaNguoiDung),
-    MaSanPham INT FOREIGN KEY REFERENCES SanPham(MaSanPham),
-    SoLuong INT DEFAULT 1
+-- Brand Table (ThuongHieu)
+CREATE TABLE Brands (
+    BrandId INT IDENTITY(1,1) PRIMARY KEY,
+    BrandName NVARCHAR(100) NOT NULL
 );
 GO
 
--- Bảng đơn hàng
-CREATE TABLE DonHang (
-    MaDonHang INT IDENTITY(1,1) PRIMARY KEY,
-    MaNguoiDung INT FOREIGN KEY REFERENCES NguoiDung(MaNguoiDung),
-    NgayDat DATETIME DEFAULT GETDATE(),
-    TongTien DECIMAL(18,2) NOT NULL,
-    TrangThai NVARCHAR(50) DEFAULT N'Chờ xử lý'
+-- Product Table (SanPham)
+CREATE TABLE Products (
+    ProductId INT IDENTITY(1,1) PRIMARY KEY,
+    ProductName NVARCHAR(150) NOT NULL,
+    CategoryId INT,
+    BrandId INT,
+    Price DECIMAL(18,2) NOT NULL,
+    StockQuantity INT DEFAULT 0,
+    ImageURL NVARCHAR(255),
+    [Description] NVARCHAR(MAX),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Products_Categories FOREIGN KEY (CategoryId)
+        REFERENCES Categories(CategoryId),
+    CONSTRAINT FK_Products_Brands FOREIGN KEY (BrandId)
+        REFERENCES Brands(BrandId)
 );
 GO
 
--- Bảng chi tiết đơn hàng
-CREATE TABLE ChiTietDonHang (
-    MaChiTiet INT IDENTITY(1,1) PRIMARY KEY,
-    MaDonHang INT FOREIGN KEY REFERENCES DonHang(MaDonHang),
-    MaSanPham INT FOREIGN KEY REFERENCES SanPham(MaSanPham),
-    SoLuong INT NOT NULL,
-    DonGia DECIMAL(18,2) NOT NULL
+---------------------------------------------------
+-- 3. E-COMMERCE TRANSACTION TABLES
+---------------------------------------------------
+
+-- Shopping Cart Table (GioHang)
+CREATE TABLE Carts (
+    CartId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT,
+    ProductId INT,
+    Quantity INT DEFAULT 1,
+
+    CONSTRAINT FK_Carts_Users FOREIGN KEY (UserId)
+        REFERENCES Users(UserId),
+    CONSTRAINT FK_Carts_Products FOREIGN KEY (ProductId)
+        REFERENCES Products(ProductId)
 );
 GO
 
--- Bảng Refresh Token cho JWT (lưu đăng nhập lâu dài)
-CREATE TABLE TheLamMoiToken (
-    MaToken INT IDENTITY(1,1) PRIMARY KEY,
-    MaNguoiDung INT FOREIGN KEY REFERENCES NguoiDung(MaNguoiDung),
-    Token NVARCHAR(max) NOT NULL,
-    HetHanVao DATETIME NOT NULL,
-    DaHuy BIT DEFAULT 0,
-    NgayTao DATETIME DEFAULT GETDATE()
+-- Order Table (DonHang)
+CREATE TABLE Orders (
+    OrderId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT,
+    OrderDate DATETIME DEFAULT GETDATE(),
+    TotalAmount DECIMAL(18,2) NOT NULL,
+    [Status] NVARCHAR(50) DEFAULT N'Pending', -- N'Chờ xử lý'
+
+    CONSTRAINT FK_Orders_Users FOREIGN KEY (UserId)
+        REFERENCES Users(UserId)
 );
 GO
 
--- Dữ liệu mẫu
-INSERT INTO DanhMuc (TenDanhMuc, MoTa)
-VALUES 
-(N'Giày thể thao', N'Sản phẩm giày dùng cho chạy bộ, tập gym...'),
-(N'Áo thể thao', N'Chất liệu co giãn, thoáng mát'),
-(N'Balo', N'Tiện dụng khi tập luyện hoặc đi chơi'),
-(N'Phụ kiện gym', N'Dây kháng lực, bình nước, găng tay...');
+-- Order Detail Table (ChiTietDonHang)
+CREATE TABLE OrderDetails (
+    OrderDetailId INT IDENTITY(1,1) PRIMARY KEY,
+    OrderId INT,
+    ProductId INT,
+    Quantity INT NOT NULL,
+    UnitPrice DECIMAL(18,2) NOT NULL,
 
-INSERT INTO ThuongHieu (TenThuongHieu)
+    CONSTRAINT FK_OrderDetails_Orders FOREIGN KEY (OrderId)
+        REFERENCES Orders(OrderId),
+    CONSTRAINT FK_OrderDetails_Products FOREIGN KEY (ProductId)
+        REFERENCES Products(ProductId)
+);
+GO
+
+---------------------------------------------------
+-- 4. SAMPLE DATA
+---------------------------------------------------
+
+-- Sample Data for Categories
+INSERT INTO Categories (CategoryName, [Description])
+VALUES 
+(N'Sport Shoes', N'Shoes for running, gym, and training...'),
+(N'Sportswear', N'Stretchy, cool, moisture-wicking materials'),
+(N'Backpacks', N'Convenient for training or travel'),
+(N'Gym Accessories', N'Resistance bands, water bottles, gloves...');
+
+-- Sample Data for Brands
+INSERT INTO Brands (BrandName)
 VALUES (N'Nike'), (N'Adidas'), (N'Puma'), (N'Under Armour');
 
-INSERT INTO SanPham (TenSanPham, MaDanhMuc, MaThuongHieu, Gia, SoLuongTon, MoTa, HinhAnh)
-VALUES 
-(N'Giày Nike Air Zoom', 1, 1, 2500000, 20, N'Giày chạy bộ cao cấp', 'nike_air_zoom.jpg'),
-(N'Áo thể thao Adidas nam', 2, 2, 550000, 50, N'Thấm hút mồ hôi tốt', 'adidas_shirt.jpg'),
-(N'Balo Puma tập gym', 3, 3, 450000, 30, N'Thiết kế bền bỉ, chống thấm', 'puma_bag.jpg');
+-- Sample Data for Products
+INSERT INTO Products (ProductName, CategoryId, BrandId, Price, StockQuantity, [Description], ImageURL)
+VALUES 
+(N'Nike Air Zoom Shoes', 1, 1, 2500000, 20, N'Premium running shoes', 'nike_air_zoom.jpg'),
+(N'Adidas Men Sport Shirt', 2, 2, 550000, 50, N'Good sweat absorption', 'adidas_shirt.jpg'),
+(N'Puma Gym Backpack', 3, 3, 450000, 30, N'Durable, waterproof design', 'puma_bag.jpg');
+GO
+
+-- Sample Data for ApiKeys
+INSERT INTO ApiKeys ([Key], [Status], [Permissions])
+VALUES (
+  'df1fd93e760ad6c176cb520c320a9f6f39d10383f51a2566d66c3c6fbe0476613abd7aa61eaad07f492b5901abff379d84d9180b394aefdb55a7e0f91ea39214',
+  1,
+  '["0000","1111"]'
+);
 GO
