@@ -21,7 +21,7 @@ namespace sportshopwebsite.Controllers
             {
                 using (var db = new SportShopDataContext())
                 {
-                    var nguoiDungs = db.NguoiDungs.ToList();
+                    var nguoiDungs = db.Users.ToList();
                     return Content("✅ Kết nối thành công! Có " + nguoiDungs.Count + " người dùng trong database.");
                 }
             }

@@ -2,121 +2,127 @@
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="SportShop">
   <DataContextMoniker Name="/SportShopDataContext" />
   <nestedChildShapes>
-    <classShape Id="bc74541f-fe7f-4e0e-92f4-b29beb0a9a79" absoluteBounds="2.25, 1.75, 2, 1.7708968098958331">
-      <DataClassMoniker Name="/SportShopDataContext/ChiTietDonHang" />
+    <classShape Id="e5a96f1c-91e7-4b49-abb3-dbbc630dac87" absoluteBounds="2.25, 1.125, 2, 1.9631982421875">
+      <DataClassMoniker Name="/SportShopDataContext/ApiKey" />
       <nestedChildShapes>
-        <elementListCompartment Id="24cde25a-df6d-4d2f-ad55-2f4f9dabc912" absoluteBounds="2.265, 2.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="2f978747-894a-4cac-a4db-5449d6610dc6" absoluteBounds="2.265, 1.585, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="d265fbc2-50bc-4043-b79d-a3fbed2f5969" absoluteBounds="1.625, 1, 2, 1.3862939453125">
-      <DataClassMoniker Name="/SportShopDataContext/DanhMuc" />
+    <classShape Id="91011e5c-4e85-466e-ba1e-c7c5497a3e5d" absoluteBounds="0.625, 1, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/SportShopDataContext/Brand" />
       <nestedChildShapes>
-        <elementListCompartment Id="392d1059-f2d8-4a10-bdfb-d8ad2aa185fb" absoluteBounds="1.6400000000000001, 1.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="5850c85e-cfa3-468c-83ed-b0a49a5a90df" absoluteBounds="0.64, 1.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="a09145ed-7ccd-49c6-8841-fa72e0ce6a01" absoluteBounds="0.625, 3.5, 2, 1.7708968098958331">
-      <DataClassMoniker Name="/SportShopDataContext/DonHang" />
+    <classShape Id="e3fb74fb-3e62-42c7-80fe-071367e8284e" absoluteBounds="5.25, 1.75, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/SportShopDataContext/Cart" />
       <nestedChildShapes>
-        <elementListCompartment Id="a39c86e6-1f51-41a6-ae6b-c9b96dd19012" absoluteBounds="0.64, 3.96, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="ac3f7f1c-6c34-44de-a511-e4ee8bee7757" absoluteBounds="5.265, 2.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(2.625 : 4.83099609375); (2.82291666666667 : 4.83099609375 : JumpStart); (2.98958333333333 : 4.83099609375 : JumpEnd); (3.71875 : 4.83099609375); (3.71875 : 3.52089680989583)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/SportShopDataContext/DonHang/DonHang_ChiTietDonHang" />
+    <classShape Id="a40eb5d4-a061-485e-a31d-e7d7d14fa36b" absoluteBounds="3.25, 3.25, 2, 1.3862939453125">
+      <DataClassMoniker Name="/SportShopDataContext/Category" />
+      <nestedChildShapes>
+        <elementListCompartment Id="45489828-a06b-48f4-b5d0-07e029dfeb2d" absoluteBounds="3.265, 3.71, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="60242dbc-3e0e-459d-8a69-f23c7b939997" absoluteBounds="4.75, 0.875, 2, 2.3478011067708335">
+      <DataClassMoniker Name="/SportShopDataContext/KeyToken" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f426e369-aae0-4160-a142-cb7b28f58b8d" absoluteBounds="4.765, 1.335, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="daa038ce-f6de-4699-afe0-5cd104fc57e2" absoluteBounds="1.25, 3.125, 2, 1.7708968098958331">
+      <DataClassMoniker Name="/SportShopDataContext/OrderDetail" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3613cda0-bf71-4a81-9c9b-9d6ed5d48557" absoluteBounds="1.2650000000000001, 3.585, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="34c241ce-a137-43e1-9136-fe481860ee03" absoluteBounds="1.625, 2.625, 2, 1.7708968098958331">
+      <DataClassMoniker Name="/SportShopDataContext/Order" />
+      <nestedChildShapes>
+        <elementListCompartment Id="8b8f5b9f-47c7-48d1-94eb-d8ef32393d17" absoluteBounds="1.6400000000000001, 3.085, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(1.625 : 3.51044840494792); (1 : 3.51044840494792); (1 : 4.01044840494792); (1.25 : 4.01044840494792)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/SportShopDataContext/Order/Order_OrderDetail" />
       <nodes>
-        <classShapeMoniker Id="a09145ed-7ccd-49c6-8841-fa72e0ce6a01" />
-        <classShapeMoniker Id="bc74541f-fe7f-4e0e-92f4-b29beb0a9a79" />
+        <classShapeMoniker Id="34c241ce-a137-43e1-9136-fe481860ee03" />
+        <classShapeMoniker Id="daa038ce-f6de-4699-afe0-5cd104fc57e2" />
       </nodes>
     </associationConnector>
-    <classShape Id="9f903b3d-68fe-4fef-81e1-3ed9bf088bc2" absoluteBounds="1.125, 2.75, 2, 1.5785953776041666">
-      <DataClassMoniker Name="/SportShopDataContext/GioHang" />
+    <classShape Id="5d3cd788-4d74-4df4-b8e9-ecebb585f928" absoluteBounds="4.25, 4.75, 2, 2.5401025390625">
+      <DataClassMoniker Name="/SportShopDataContext/Product" />
       <nestedChildShapes>
-        <elementListCompartment Id="d501f2d9-dbbc-4247-9acf-de79b36d478d" absoluteBounds="1.1400000000000001, 3.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="26eda9ea-1b7b-4519-b1d3-c340dddfb618" absoluteBounds="4.265, 5.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="300832b4-9e20-4249-b95a-5d1ba9a5bbde" absoluteBounds="4.75, 1.75, 2, 2.5401025390625">
-      <DataClassMoniker Name="/SportShopDataContext/SanPham" />
+    <associationConnector edgePoints="[(5.78125 : 4.75); (5.78125 : 3.32859537760417)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SportShopDataContext/Product/Product_Cart" />
+      <nodes>
+        <classShapeMoniker Id="5d3cd788-4d74-4df4-b8e9-ecebb585f928" />
+        <classShapeMoniker Id="e3fb74fb-3e62-42c7-80fe-071367e8284e" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.25 : 6.09300017447917); (2.25 : 6.09300017447917); (2.25 : 4.89589680989583)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SportShopDataContext/Product/Product_OrderDetail" />
+      <nodes>
+        <classShapeMoniker Id="5d3cd788-4d74-4df4-b8e9-ecebb585f928" />
+        <classShapeMoniker Id="daa038ce-f6de-4699-afe0-5cd104fc57e2" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(0.8125 : 2.19399251302083); (0.8125 : 6.72280385677083); (4.25 : 6.72280385677083)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SportShopDataContext/Brand/Brand_Product" />
+      <nodes>
+        <classShapeMoniker Id="91011e5c-4e85-466e-ba1e-c7c5497a3e5d" />
+        <classShapeMoniker Id="5d3cd788-4d74-4df4-b8e9-ecebb585f928" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.75 : 4.6362939453125); (4.75 : 4.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SportShopDataContext/Category/Category_Product" />
+      <nodes>
+        <classShapeMoniker Id="a40eb5d4-a061-485e-a31d-e7d7d14fa36b" />
+        <classShapeMoniker Id="5d3cd788-4d74-4df4-b8e9-ecebb585f928" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="83a88c8c-956c-4142-9fa6-658d04dd306a" absoluteBounds="6.75, 4.625, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/SportShopDataContext/Role" />
       <nestedChildShapes>
-        <elementListCompartment Id="59e9583b-0106-455f-9c81-5db166b88d08" absoluteBounds="4.765, 2.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="15ccc2c0-eb0e-4d78-91d2-abf1d51cbd22" absoluteBounds="6.765, 5.085, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.75 : 2.88869466145833); (4.69270833333333 : 2.88869466145833 : JumpStart); (4.52604166666667 : 2.88869466145833 : JumpEnd); (4.25 : 2.88869466145833)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/SportShopDataContext/SanPham/SanPham_ChiTietDonHang" />
-      <nodes>
-        <classShapeMoniker Id="300832b4-9e20-4249-b95a-5d1ba9a5bbde" />
-        <classShapeMoniker Id="bc74541f-fe7f-4e0e-92f4-b29beb0a9a79" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(4.75 : 3.93674967447917); (4.69270833333333 : 3.93674967447917 : JumpStart); (4.52604166666667 : 3.93674967447917 : JumpEnd); (3.80208333333333 : 3.93674967447917 : JumpStart); (3.63541666666667 : 3.93674967447917 : JumpEnd); (3.125 : 3.93674967447917)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/SportShopDataContext/SanPham/SanPham_GioHang" />
-      <nodes>
-        <classShapeMoniker Id="300832b4-9e20-4249-b95a-5d1ba9a5bbde" />
-        <classShapeMoniker Id="9f903b3d-68fe-4fef-81e1-3ed9bf088bc2" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(3.625 : 1.3437505); (4.609375 : 1.3437505); (4.609375 : 4.3057275390625); (5.75 : 4.3057275390625); (5.75 : 4.2901025390625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/SportShopDataContext/DanhMuc/DanhMuc_SanPham" />
-      <nodes>
-        <classShapeMoniker Id="d265fbc2-50bc-4043-b79d-a3fbed2f5969" />
-        <classShapeMoniker Id="300832b4-9e20-4249-b95a-5d1ba9a5bbde" />
-      </nodes>
-    </associationConnector>
-    <classShape Id="5319a167-2171-446f-a483-2199d7e95de7" absoluteBounds="4.625, 5.125, 2, 1.9631982421875">
-      <DataClassMoniker Name="/SportShopDataContext/TheLamMoiToken" />
+    <classShape Id="cf3bfd08-b461-4129-b1e4-51c480296039" absoluteBounds="7, 3.875, 2, 2.5401025390625">
+      <DataClassMoniker Name="/SportShopDataContext/User" />
       <nestedChildShapes>
-        <elementListCompartment Id="7a8023c4-53a4-4c83-9fdf-324b8c67abc4" absoluteBounds="4.64, 5.585, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="f79da715-fe34-4774-9368-662bca99726b" absoluteBounds="7.015, 4.335, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="3a2bdd0d-6d11-422a-a1d1-50d69c4d3b02" absoluteBounds="4.625, 1, 2, 1.1939925130208333">
-      <DataClassMoniker Name="/SportShopDataContext/ThuongHieu" />
-      <nestedChildShapes>
-        <elementListCompartment Id="67d72c80-a417-40c1-aaaa-4f669d5632d8" absoluteBounds="4.64, 1.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <associationConnector edgePoints="[(5.625 : 1); (5.625 : 0.75); (5.75 : 0.75); (5.75 : 1.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/SportShopDataContext/ThuongHieu/ThuongHieu_SanPham" />
+    <associationConnector edgePoints="[(8.1250005 : 3.875); (8.1250005 : 2.53929768880208); (7.25 : 2.53929768880208)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SportShopDataContext/User/User_Cart" />
       <nodes>
-        <classShapeMoniker Id="3a2bdd0d-6d11-422a-a1d1-50d69c4d3b02" />
-        <classShapeMoniker Id="300832b4-9e20-4249-b95a-5d1ba9a5bbde" />
+        <classShapeMoniker Id="cf3bfd08-b461-4129-b1e4-51c480296039" />
+        <classShapeMoniker Id="e3fb74fb-3e62-42c7-80fe-071367e8284e" />
       </nodes>
     </associationConnector>
-    <classShape Id="1d51f525-c764-454c-968b-6aff6513cde6" absoluteBounds="7.25, 1.25, 2, 1.1939925130208333">
-      <DataClassMoniker Name="/SportShopDataContext/VaiTro" />
-      <nestedChildShapes>
-        <elementListCompartment Id="439f2af2-4c8b-4b1f-a545-d3863f110292" absoluteBounds="7.265, 1.71, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="5a3b774b-86e9-449b-8f0f-4d778998c6ef" absoluteBounds="3.25, 5.375, 2, 2.7324039713541666">
-      <DataClassMoniker Name="/SportShopDataContext/NguoiDung" />
-      <nestedChildShapes>
-        <elementListCompartment Id="89e27d0e-2860-44f3-8749-7fdcfca0276a" absoluteBounds="3.265, 5.835, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <associationConnector edgePoints="[(3.25 : 6.74120198567708); (1.625 : 6.74120198567708); (1.625 : 5.27089680989583)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/SportShopDataContext/NguoiDung/NguoiDung_DonHang" />
+    <associationConnector edgePoints="[(8.59375275 : 3.875); (8.59375275 : 1.28125); (6.75 : 1.28125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SportShopDataContext/User/User_KeyToken" />
       <nodes>
-        <classShapeMoniker Id="5a3b774b-86e9-449b-8f0f-4d778998c6ef" />
-        <classShapeMoniker Id="a09145ed-7ccd-49c6-8841-fa72e0ce6a01" />
+        <classShapeMoniker Id="cf3bfd08-b461-4129-b1e4-51c480296039" />
+        <classShapeMoniker Id="60242dbc-3e0e-459d-8a69-f23c7b939997" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(3.25 : 6.02684849283854); (2.90625 : 6.02684849283854); (2.90625 : 4.32859537760417)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/SportShopDataContext/NguoiDung/NguoiDung_GioHang" />
+    <associationConnector edgePoints="[(7.67999775 : 3.875); (7.67999775 : 3.51930018880208); (5.86458333333333 : 3.51930018880208 : JumpStart); (5.69791666666667 : 3.51930018880208 : JumpEnd); (3.625 : 3.51930018880208)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SportShopDataContext/User/User_Order" />
       <nodes>
-        <classShapeMoniker Id="5a3b774b-86e9-449b-8f0f-4d778998c6ef" />
-        <classShapeMoniker Id="9f903b3d-68fe-4fef-81e1-3ed9bf088bc2" />
+        <classShapeMoniker Id="cf3bfd08-b461-4129-b1e4-51c480296039" />
+        <classShapeMoniker Id="34c241ce-a137-43e1-9136-fe481860ee03" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.25 : 5.375); (4.25 : 4.875); (5.625 : 4.875); (5.625 : 5.125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/SportShopDataContext/NguoiDung/NguoiDung_TheLamMoiToken" />
+    <associationConnector edgePoints="[(6.75 : 5.22199625651042); (6.5 : 5.22199625651042); (6.5 : 5.14505126953125); (7 : 5.14505126953125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/SportShopDataContext/Role/Role_User" />
       <nodes>
-        <classShapeMoniker Id="5a3b774b-86e9-449b-8f0f-4d778998c6ef" />
-        <classShapeMoniker Id="5319a167-2171-446f-a483-2199d7e95de7" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(8.25 : 2.44399251302083); (8.25 : 7.62905110677083); (5.25 : 7.62905110677083)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/SportShopDataContext/VaiTro/VaiTro_NguoiDung" />
-      <nodes>
-        <classShapeMoniker Id="1d51f525-c764-454c-968b-6aff6513cde6" />
-        <classShapeMoniker Id="5a3b774b-86e9-449b-8f0f-4d778998c6ef" />
+        <classShapeMoniker Id="83a88c8c-956c-4142-9fa6-658d04dd306a" />
+        <classShapeMoniker Id="cf3bfd08-b461-4129-b1e4-51c480296039" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>

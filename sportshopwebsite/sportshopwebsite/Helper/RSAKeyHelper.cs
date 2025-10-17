@@ -18,13 +18,12 @@ namespace sportshopwebsite.Helper
             {
                 rsa.PersistKeyInCsp = false;
 
-                // Private key (server giữ)
                 privateKeyXml = rsa.ToXmlString(true);
                 File.WriteAllText(Path.Combine(folderPath, $"user{userId}_private.xml"), privateKeyXml);
 
-                // Public key (lưu database)
+
                 publicKeyXml = rsa.ToXmlString(false);
-                // TODO: Lưu publicKeyXml vào database Users.PublicKey
+
             }
         }
     }
