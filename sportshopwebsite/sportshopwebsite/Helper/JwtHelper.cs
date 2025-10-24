@@ -17,13 +17,16 @@ namespace sportshopwebsite.Helper
         private const int ACCESS_TOKEN_EXPIRY_DAYS = 3;
         private const int REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
-        // Constructor: Khởi tạo với Private Key
+
         public JwtHelper(string privateKeyXml)
         {
-            // Kiểm tra và loại bỏ header/footer nếu PrivateKey được lưu dưới dạng khác XML
+            if (string.IsNullOrEmpty(privateKeyXml))
+            {
+                throw new ArgumentException("PrivateKey cannot be null or empty.");
+            }
+
             if (privateKeyXml.Contains("BEGIN RSA PRIVATE KEY"))
             {
-                // Giả định PrivateKey được lưu dưới dạng XML
                 throw new ArgumentException("PrivateKey must be provided in RSA XML string format.");
             }
 
@@ -31,9 +34,7 @@ namespace sportshopwebsite.Helper
             rsa.FromXmlString(privateKeyXml);
         }
 
-        // -------------------------------------------------------------------
-        // FUNCTION 1: Generate Access/Refresh Token
-        // -------------------------------------------------------------------
+
         public string GenerateToken(int userId, string type)
         {
             type = type.ToLower();
@@ -42,7 +43,6 @@ namespace sportshopwebsite.Helper
 
             var claims = new[]
             {
-                // Thêm claim 'typ' để phân biệt Access/Refresh Token (tùy chọn)
                 new Claim("typ", type),
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -71,9 +71,7 @@ namespace sportshopwebsite.Helper
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        // -------------------------------------------------------------------
-        // FUNCTION 2: Validate Token (Giữ nguyên)
-        // -------------------------------------------------------------------
+
         public static bool ValidateToken(string token, string publicKeyXml)
         {
             var rsaPub = new RSACryptoServiceProvider();
@@ -83,7 +81,7 @@ namespace sportshopwebsite.Helper
             }
             catch (CryptographicException)
             {
-                // Xử lý nếu PublicKey không hợp lệ
+
                 return false;
             }
 
@@ -97,7 +95,7 @@ namespace sportshopwebsite.Helper
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 RequireExpirationTime = true,
-                ClockSkew = TimeSpan.Zero // Yêu cầu kiểm tra thời gian chính xác
+                ClockSkew = TimeSpan.Zero 
             };
 
             try
@@ -111,10 +109,7 @@ namespace sportshopwebsite.Helper
             }
         }
 
-        // -------------------------------------------------------------------
-        // FUNCTION 3: Get Claims from Validated Token (Mới)
-        // Dùng để lấy UserId sau khi token được xác thực
-        // -------------------------------------------------------------------
+
         public static ClaimsPrincipal GetPrincipalFromToken(string token, string publicKeyXml)
         {
             var rsaPub = new RSACryptoServiceProvider();
@@ -142,7 +137,6 @@ namespace sportshopwebsite.Helper
 
             try
             {
-                // Validate và trả về ClaimsPrincipal
                 return handler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
             }
             catch
@@ -151,27 +145,31 @@ namespace sportshopwebsite.Helper
             }
         }
 
-        // -------------------------------------------------------------------
-        // FUNCTION 4: Generate RSA Key Pair (Mới)
-        // Dùng khi người dùng đăng ký để lưu Private/Public Key vào bảng KeyTokens
-        // -------------------------------------------------------------------
+
         public static KeyValuePair<string, string> GenerateRsaKeyPair()
         {
-            using (var rsa = new RSACryptoServiceProvider(2048)) // Sử dụng kích thước khóa 2048 bit
+            var rsa = new RSACryptoServiceProvider(2048);
+            try
             {
-                // Lấy Private Key (bao gồm cả Public Key)
                 string privateKeyXml = rsa.ToXmlString(true);
-
-                // Lấy Public Key (chỉ Public Key)
                 string publicKeyXml = rsa.ToXmlString(false);
+
+                if (string.IsNullOrWhiteSpace(privateKeyXml) || !privateKeyXml.Contains("<RSAKeyValue>"))
+                {
+                    throw new Exception("Không thể tạo private key hợp lệ. RSA provider không trả về XML key.");
+                }
 
                 return new KeyValuePair<string, string>(privateKeyXml, publicKeyXml);
             }
+            finally
+            {
+                rsa.PersistKeyInCsp = false;
+                rsa.Clear();
+            }
         }
 
-        // -------------------------------------------------------------------
-        // FUNCTION 5: Lấy thời gian hết hạn của token
-        // -------------------------------------------------------------------
+
+
         public static DateTime GetTokenExpiryTime(string token)
         {
             var handler = new JwtSecurityTokenHandler();
@@ -181,13 +179,10 @@ namespace sportshopwebsite.Helper
             {
                 return jwtToken.ValidTo;
             }
-            // Trả về thời gian tối thiểu nếu không đọc được (hoặc xử lý lỗi tùy chọn)
             return DateTime.MinValue;
         }
 
-        // -------------------------------------------------------------------
-        // PROPERTY: Lấy thời gian hết hạn cho Refresh Token (Dùng trong accessService)
-        // -------------------------------------------------------------------
+
         public static int RefreshTokenExpiryDays => REFRESH_TOKEN_EXPIRY_DAYS;
     }
 }
