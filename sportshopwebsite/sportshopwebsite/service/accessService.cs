@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Web.Helpers; // Dùng cho BCrypt
-using System.Web.Script.Serialization; // Cần thiết cho JSON (Nếu bạn muốn triển khai logic Replay Attack)
+using System.Web.Helpers; 
+using System.Web.Script.Serialization; 
 
 namespace sportshopwebsite.service
 {
@@ -21,35 +21,40 @@ namespace sportshopwebsite.service
             _server = server;
         }
 
-        // -------------------------------------------------------------------
-        // LOGIC ĐĂNG NHẬP (LOGIN)
-        // -------------------------------------------------------------------
-        public object LoginUser(string Email, string Password)
+
+        public ApiResponse LoginUser(string Email, string Password)
         {
-            // 1. Tìm User và Xác thực mật khẩu
             var user = _db.Users.FirstOrDefault(u => u.Email == Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(Password, user.Password))
             {
-                return new { success = false, message = "Email hoặc mật khẩu không đúng!" };
+                return new ApiResponse(false, "Email hoặc mật khẩu không đúng!");
             }
 
-            // 2. Tìm KeyTokens hiện tại của User
+
             var keyToken = _db.KeyTokens.FirstOrDefault(kt => kt.UserId == user.UserId);
 
-            // Khai báo ngoài scope để sử dụng sau này
+
             string accessToken, refreshToken;
             DateTime refreshTokenExpiry;
 
             if (keyToken == null)
             {
-                // TRƯỜNG HỢP 1: User đăng ký từ hệ thống cũ HOẶC bản ghi KeyTokens bị xóa
-
-                // a) Tạo cặp khóa và token mới
+                
                 var newKeyPair = JwtHelper.GenerateRsaKeyPair();
+                if (string.IsNullOrEmpty(newKeyPair.Key))
+                {
+                    throw new Exception("❌ Lỗi: newKeyPair.Key (private key) bị null khi tạo mới keypair!");
+                }
+
+                if (keyToken != null && string.IsNullOrEmpty(keyToken.PrivateKey))
+                {
+                    throw new Exception("❌ Lỗi: privateKeyXml bị null trong database!");
+                }
+
                 GenerateAccessAndRefreshTokens(user.UserId, newKeyPair.Key, out accessToken, out refreshToken, out refreshTokenExpiry);
 
-                // b) Khởi tạo và lưu bản ghi KeyTokens mới
+        
                 keyToken = new KeyToken
                 {
                     UserId = user.UserId,
@@ -64,49 +69,43 @@ namespace sportshopwebsite.service
             }
             else
             {
-                // TRƯỜNG HỢP 2: Đã có KeyTokens -> Chỉ cần tạo token mới và cập nhật
-
                 string privateKeyXml = keyToken.PrivateKey;
 
-                // a) Tạo token mới
+                if (string.IsNullOrEmpty(privateKeyXml))
+                {
+                    return new ApiResponse(false, "Private key không tồn tại. Vui lòng đăng ký lại.");
+                }
+
                 GenerateAccessAndRefreshTokens(user.UserId, privateKeyXml, out accessToken, out refreshToken, out refreshTokenExpiry);
 
-                // b) CẬP NHẬT Refresh Token hiện tại
                 keyToken.CurrentRefreshToken = refreshToken;
                 keyToken.UpdatedAt = DateTime.Now;
             }
 
-            // 3. Submit thay đổi (Áp dụng cho cả 2 trường hợp)
+         
             _db.SubmitChanges();
 
-            return new
+            return new ApiResponse(true, "Đăng nhập thành công!", new
             {
-                success = true,
-                message = "Đăng nhập thành công!",
-                data = new
+                user = new
                 {
-                    user = new
-                    {
-                        id = user.UserId,
-                        fullName = user.FullName,
-                        email = user.Email
-                    },
-                    accessToken,
-                    refreshToken,
-                    expiresAt = refreshTokenExpiry.ToString("yyyy-MM-dd HH:mm:ss")
-                }
-            };
+                    id = user.UserId,
+                    fullName = user.FullName,
+                    email = user.Email
+                },
+                accessToken,
+                refreshToken,
+                expiresAt = refreshTokenExpiry.ToString("yyyy-MM-dd HH:mm:ss")
+            });
         }
 
-        // -------------------------------------------------------------------
-        // LOGIC ĐĂNG KÝ (SIGNUP)
-        // -------------------------------------------------------------------
-        public object RegisterUser(string FullName, string Email, string Password, string PhoneNumber, string Address)
+
+        public ApiResponse RegisterUser(string FullName, string Email, string Password, string PhoneNumber, string Address)
         {
             var existingUser = _db.Users.FirstOrDefault(u => u.Email == Email);
             if (existingUser != null)
             {
-                return new { success = false, message = "Email đã tồn tại!" };
+                return new ApiResponse(false, "Email đã tồn tại!");
             }
 
             // 1. Tạo User
@@ -117,7 +116,7 @@ namespace sportshopwebsite.service
                 FullName = FullName,
                 Email = Email,
                 Password = hashedPassword,
-                RoleId = 2, // Khách hàng
+                RoleId = 2, 
                 PhoneNumber = PhoneNumber,
                 Address = Address,
                 Status = true,
@@ -125,18 +124,17 @@ namespace sportshopwebsite.service
             };
 
             _db.Users.InsertOnSubmit(user);
-            // SubmitChanges lần 1 để lấy được newUserId
+
             _db.SubmitChanges();
             int newUserId = user.UserId;
 
-            // 2. Tạo cặp khóa RSA và Token
             var keyPair = JwtHelper.GenerateRsaKeyPair();
             string privateKeyXml = keyPair.Key;
             string publicKeyXml = keyPair.Value;
 
             GenerateAccessAndRefreshTokens(newUserId, privateKeyXml, out string accessToken, out string refreshToken, out DateTime refreshTokenExpiry);
 
-            // 3. Lưu Khóa và Refresh Token vào bảng KeyTokens
+
             KeyToken keyToken = new KeyToken
             {
                 UserId = newUserId,
@@ -149,60 +147,52 @@ namespace sportshopwebsite.service
             };
 
             _db.KeyTokens.InsertOnSubmit(keyToken);
-            // SubmitChanges lần 2 để lưu KeyTokens
+   
             _db.SubmitChanges();
 
 
-            return new
+            return new ApiResponse(true, "Đăng ký thành công!", new
             {
-                success = true,
-                message = "Đăng ký thành công!",
-                data = new
-                {
-                    userId = newUserId,
-                    accessToken = accessToken,
-                    refreshToken = refreshToken,
-                    expiresAt = refreshTokenExpiry.ToString("yyyy-MM-dd HH:mm:ss")
-                }
-            };
+                userId = newUserId,
+                accessToken = accessToken,
+                refreshToken = refreshToken,
+                expiresAt = refreshTokenExpiry.ToString("yyyy-MM-dd HH:mm:ss")
+            });
         }
 
-        // -------------------------------------------------------------------
-        // HÀM HỖ TRỢ
-        // -------------------------------------------------------------------
         private void GenerateAccessAndRefreshTokens(int userId, string privateKeyXml, out string accessToken, out string refreshToken, out DateTime refreshTokenExpiry)
         {
+            if (string.IsNullOrEmpty(privateKeyXml))
+            {
+                throw new ArgumentException("PrivateKey cannot be null or empty.");
+            }
+
             var jwtHelper = new JwtHelper(privateKeyXml);
             accessToken = jwtHelper.GenerateToken(userId, "access");
             refreshToken = jwtHelper.GenerateToken(userId, "refresh");
 
-            // Lấy thời gian hết hạn từ JwtHelper để đồng bộ
             refreshTokenExpiry = JwtHelper.GetTokenExpiryTime(refreshToken);
         }
 
-        // -------------------------------------------------------------------
-        // LOGIC ĐĂNG XUẤT (LOGOUT)
-        // -------------------------------------------------------------------
-        public object LogoutUser(string refreshToken)
+        public ApiResponse LogoutUser(string refreshToken)
         {
-            // 1. Tìm bản ghi KeyTokens có CurrentRefreshToken trùng khớp
+
             var keyToken = _db.KeyTokens
                 .FirstOrDefault(kt => kt.CurrentRefreshToken == refreshToken);
 
             if (keyToken == null)
             {
-                // Nếu không tìm thấy, có thể token đã bị hủy hoặc không hợp lệ
-                return new { success = false, message = "Refresh Token không hợp lệ hoặc không tồn tại." };
+        
+                return new ApiResponse(false, "Refresh Token không hợp lệ hoặc không tồn tại.");
             }
 
-            // 2. Hủy phiên: Đặt CurrentRefreshToken về NULL
             keyToken.CurrentRefreshToken = null;
 
-            // 3. Lưu thay đổi
+         
             keyToken.UpdatedAt = DateTime.Now;
             _db.SubmitChanges();
 
-            return new { success = true, message = "Đăng xuất thành công. Phiên đã bị hủy." };
+            return new ApiResponse(true, "Đăng xuất thành công. Phiên đã bị hủy.");
         }
     }
 }

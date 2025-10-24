@@ -7,17 +7,14 @@ using System.IO;
 using System.Linq;
 using System.Web.Helpers;
 using System.Web.Mvc;
-// Đảm bảo bạn đã thêm BCrypt.Net-Next và các gói JWT
 
 namespace sportshopwebsite.Controllers
 {
     public class AuthController : Controller
     {
-        // Giả định SportShopDataContext là DataContext/DbContext của bạn
         private SportShopDataContext db = new SportShopDataContext();
 
-        // GET: Auth
-        [ApiAttribute(RequiredPermission = "1111")]
+        //[ApiAttribute(RequiredPermission = "1111")]
         public ActionResult Index()
         {
             return View();
@@ -36,18 +33,37 @@ namespace sportshopwebsite.Controllers
         }
 
         [HttpPost]
-        public ActionResult Signup(string FullName, string Email, string Password, string PhoneNumber, string Address)
+        public ActionResult Signup(User user)
         {
             try
             {
-                var authService = new accessService(db, Server);
+                if (ModelState.IsValid)
+                {
+                    var authService = new accessService(db, Server);
 
-                var result = authService.RegisterUser(FullName, Email, Password, PhoneNumber, Address);
-                return Json(result, JsonRequestBehavior.AllowGet);
+                    var result = authService.RegisterUser(user.FullName, user.Email, user.Password, user.PhoneNumber, user.Address);
+                    
+                    if (result.Success)
+                    {
+                        ViewBag.Success = result.Message;
+                        return View();
+                    }
+                    else
+                    {
+                        ViewBag.Error = result.Message;
+                        return View(user);
+                    }
+                }
+                else
+                {
+                    ViewBag.Error = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
+                    return View(user);
+                }
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Lỗi trong quá trình đăng ký: " + ex.Message });
+                ViewBag.Error = "Lỗi trong quá trình đăng ký: " + ex.Message;
+                return View(user);
             }
         }
 

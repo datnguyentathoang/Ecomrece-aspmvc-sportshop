@@ -1,4 +1,4 @@
-﻿@model sportshopwebsite.Models.NguoiDung
+﻿@model sportshopwebsite.Models.User
 
 
     @{
@@ -14,10 +14,10 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group mb-3">
-            @Html.LabelFor(model => model.HoTen, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.FullName, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.HoTen, new { @class = "form-control", placeholder = "Nhập họ tên..." })
-                @Html.ValidationMessageFor(model => model.HoTen, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(model => model.FullName, new { @class = "form-control", placeholder = "Nhập họ tên..." })
+                @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -30,26 +30,26 @@
         </div>
 
         <div class="form-group mb-3">
-            @Html.LabelFor(model => model.MatKhau, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.PasswordFor(model => model.MatKhau, new { @class = "form-control", placeholder = "Nhập mật khẩu..." })
-                @Html.ValidationMessageFor(model => model.MatKhau, "", new { @class = "text-danger" })
+                @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Nhập mật khẩu..." })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group mb-3">
-            @Html.LabelFor(model => model.SoDienThoai, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.PhoneNumber, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.SoDienThoai, new { @class = "form-control", placeholder = "Nhập số điện thoại..." })
-                @Html.ValidationMessageFor(model => model.SoDienThoai, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", placeholder = "Nhập số điện thoại..." })
+                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group mb-3">
-            @Html.LabelFor(model => model.DiaChi, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Address, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ..." })
-                @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(model => model.Address, new { @class = "form-control", placeholder = "Nhập địa chỉ..." })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -72,7 +72,7 @@
 }
 
 <div>
-    <a href="@Url.Action("Login", "Account")">Đã có tài khoản? Đăng nhập ngay</a>
+    <a href="@Url.Action("Login", "Auth")">Đã có tài khoản? Đăng nhập ngay</a>
 </div>
 
 @section Scripts {

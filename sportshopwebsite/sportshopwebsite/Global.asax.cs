@@ -17,5 +17,15 @@ namespace sportshopwebsite
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Application_Error()
+        {
+            var exception = Server.GetLastError();
+            if (exception != null)
+            {
+                // Log the exception here if you have logging configured
+                System.Diagnostics.Debug.WriteLine($"Application Error: {exception.Message}");
+            }
+        }
     }
 }

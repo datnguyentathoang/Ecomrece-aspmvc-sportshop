@@ -10,7 +10,7 @@ namespace sportshopwebsite.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return Content("✅ Home Controller is working! Time: " + DateTime.Now.ToString());
         }
 
         public ActionResult About()
