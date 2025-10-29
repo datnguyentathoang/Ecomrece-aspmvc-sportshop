@@ -1,4 +1,4 @@
-﻿CREATE DATABASE SportShop;
+CREATE DATABASE SportShop;
 GO
 
 USE SportShop;
@@ -14,8 +14,8 @@ GO
 
 -- Roles
 CREATE TABLE Roles (
-    RoleId INT IDENTITY(1,1) PRIMARY KEY,
-    RoleName NVARCHAR(50) NOT NULL UNIQUE
+    RoleId INT IDENTITY(1,1) PRIMARY KEY,
+    RoleName NVARCHAR(50) NOT NULL UNIQUE
 );
 GO
 
@@ -23,81 +23,57 @@ INSERT INTO Roles (RoleName)
 VALUES (N'Administrator'), (N'Customer');
 GO
 
--- ApiKeys (API access)
-CREATE TABLE ApiKeys (
-    ApiKeyId INT IDENTITY(1,1) PRIMARY KEY,
-    [Key] NVARCHAR(255) NOT NULL UNIQUE,
-    [Status] BIT DEFAULT 1,
-    [Permissions] NVARCHAR(MAX) NULL, -- JSON string or CSV
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
-    UpdatedAt DATETIME NOT NULL DEFAULT GETDATE()
-);
-GO
-
 -- Users (không chứa Address)
 CREATE TABLE Users (
-    UserId INT IDENTITY(1,1) PRIMARY KEY,
-    FullName NVARCHAR(150),
-    Email NVARCHAR(150) NOT NULL UNIQUE,
-    [Password] NVARCHAR(255) NOT NULL, -- lưu hashed password
-    RoleId INT NOT NULL,
-    PhoneNumber NVARCHAR(20),
-    [Status] BIT DEFAULT 1,
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    UserId INT IDENTITY(1,1) PRIMARY KEY,
+    FullName NVARCHAR(150),
+    Email NVARCHAR(150) NOT NULL UNIQUE,
+    [Password] NVARCHAR(255) NOT NULL, -- lưu hashed password
+    RoleId INT NOT NULL,
+    PhoneNumber NVARCHAR(20),
+    [Status] BIT DEFAULT 1,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
 
-    CONSTRAINT FK_Users_Roles FOREIGN KEY (RoleId)
-        REFERENCES Roles(RoleId)
+    CONSTRAINT FK_Users_Roles FOREIGN KEY (RoleId)
+        REFERENCES Roles(RoleId)
 );
 GO
 
--- KeyTokens (lưu public/private keys & refresh tokens)
-CREATE TABLE KeyTokens (
-    KeyTokenId INT IDENTITY(1,1) PRIMARY KEY,
-    UserId INT NOT NULL UNIQUE,  -- mỗi user 1 record
-    PrivateKey NVARCHAR(MAX) NOT NULL,
-    PublicKey NVARCHAR(MAX) NOT NULL,
-    RefreshTokensUsed NVARCHAR(MAX) DEFAULT N'[]', -- JSON array
-    CurrentRefreshToken NVARCHAR(MAX) NULL,
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
-    UpdatedAt DATETIME NOT NULL DEFAULT GETDATE(),
-
-    CONSTRAINT FK_KeyTokens_Users FOREIGN KEY (UserId)
-        REFERENCES Users(UserId)
-);
-GO
+-- **ĐÃ XÓA: Bảng ApiKeys**
+-- **ĐÃ XÓA: Bảng KeyTokens**
 
 ---------------------------------------------------
 -- 2. PRODUCT MANAGEMENT TABLES
 ---------------------------------------------------
 
 CREATE TABLE Categories (
-    CategoryId INT IDENTITY(1,1) PRIMARY KEY,
-    CategoryName NVARCHAR(100) NOT NULL,
-    [Description] NVARCHAR(255) NULL
+    CategoryId INT IDENTITY(1,1) PRIMARY KEY,
+    CategoryName NVARCHAR(100) NOT NULL,
+    [Description] NVARCHAR(255) NULL
 );
 GO
 
 CREATE TABLE Brands (
-    BrandId INT IDENTITY(1,1) PRIMARY KEY,
-    BrandName NVARCHAR(100) NOT NULL
+    BrandId INT IDENTITY(1,1) PRIMARY KEY,
+    BrandName NVARCHAR(100) NOT NULL
 );
 GO
 
 CREATE TABLE Products (
-    ProductId INT IDENTITY(1,1) PRIMARY KEY,
-    ProductName NVARCHAR(150) NOT NULL,
-    CategoryId INT NULL,
-    BrandId INT NULL,
-    Price DECIMAL(18,2) NOT NULL,
-    StockQuantity INT DEFAULT 0,
-    ImageURL NVARCHAR(255) NULL,
-    [Description] NVARCHAR(MAX) NULL,
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ProductId INT IDENTITY(1,1) PRIMARY KEY,
+    ProductName NVARCHAR(150) NOT NULL,
+    CategoryId INT NULL,
+    BrandId INT NULL,
+    Price DECIMAL(18,2) NOT NULL,
+    StockQuantity INT DEFAULT 0,
+    ImageURL NVARCHAR(255) NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
 
-    CONSTRAINT FK_Products_Categories FOREIGN KEY (CategoryId)
-        REFERENCES Categories(CategoryId),
-    CONSTRAINT FK_Products_Brands FOREIGN KEY (BrandId)
-        REFERENCES Brands(BrandId)
+    CONSTRAINT FK_Products_Categories FOREIGN KEY (CategoryId)
+        REFERENCES Categories(CategoryId),
+    CONSTRAINT FK_Products_Brands FOREIGN KEY (BrandId)
+        REFERENCES Brands(BrandId)
 );
 GO
 
@@ -112,19 +88,19 @@ GO
 
 -- UserAddresses: 1 user có nhiều địa chỉ
 CREATE TABLE UserAddresses (
-    AddressId INT IDENTITY(1,1) PRIMARY KEY,
-    UserId INT NOT NULL,
-    FullName NVARCHAR(150) NOT NULL,
-    PhoneNumber NVARCHAR(20) NOT NULL,
-    AddressLine NVARCHAR(255) NOT NULL, -- ví dụ: "12 Nguyễn Huệ, P. Bến Nghé"
-    Ward NVARCHAR(100) NULL,
-    District NVARCHAR(100) NULL,
-    City NVARCHAR(100) NULL,
-    IsDefault BIT DEFAULT 0,
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    AddressId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    FullName NVARCHAR(150) NOT NULL,
+    PhoneNumber NVARCHAR(20) NOT NULL,
+    AddressLine NVARCHAR(255) NOT NULL, -- ví dụ: "12 Nguyễn Huệ, P. Bến Nghé"
+    Ward NVARCHAR(100) NULL,
+    District NVARCHAR(100) NULL,
+    City NVARCHAR(100) NULL,
+    IsDefault BIT DEFAULT 0,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
 
-    CONSTRAINT FK_UserAddresses_Users FOREIGN KEY (UserId)
-        REFERENCES Users(UserId)
+    CONSTRAINT FK_UserAddresses_Users FOREIGN KEY (UserId)
+        REFERENCES Users(UserId)
 );
 GO
 
@@ -132,15 +108,15 @@ CREATE INDEX IX_UserAddresses_UserId ON UserAddresses(UserId);
 
 -- Carts (giỏ hàng tạm)
 CREATE TABLE Carts (
-    CartId INT IDENTITY(1,1) PRIMARY KEY,
-    UserId INT NOT NULL,
-    ProductId INT NOT NULL,
-    Quantity INT DEFAULT 1,
+    CartId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    ProductId INT NOT NULL,
+    Quantity INT DEFAULT 1,
 
-    CONSTRAINT FK_Carts_Users FOREIGN KEY (UserId)
-        REFERENCES Users(UserId),
-    CONSTRAINT FK_Carts_Products FOREIGN KEY (ProductId)
-        REFERENCES Products(ProductId)
+    CONSTRAINT FK_Carts_Users FOREIGN KEY (UserId)
+        REFERENCES Users(UserId),
+    CONSTRAINT FK_Carts_Products FOREIGN KEY (ProductId)
+        REFERENCES Products(ProductId)
 );
 GO
 
@@ -148,18 +124,18 @@ CREATE INDEX IX_Carts_UserId ON Carts(UserId);
 
 -- Orders (lưu ShippingAddressId trỏ tới UserAddresses)
 CREATE TABLE Orders (
-    OrderId INT IDENTITY(1,1) PRIMARY KEY,
-    UserId INT NOT NULL,
-    OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
-    TotalAmount DECIMAL(18,2) NOT NULL,
-    [Status] NVARCHAR(50) NOT NULL DEFAULT N'Pending',
-    ShippingAddressId INT NULL, -- địa chỉ được chọn khi đặt hàng
+    OrderId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
+    TotalAmount DECIMAL(18,2) NOT NULL,
+    [Status] NVARCHAR(50) NOT NULL DEFAULT N'Pending',
+    ShippingAddressId INT NULL, -- địa chỉ được chọn khi đặt hàng
 
-    CONSTRAINT FK_Orders_Users FOREIGN KEY (UserId)
-        REFERENCES Users(UserId),
-    CONSTRAINT FK_Orders_UserAddresses FOREIGN KEY (ShippingAddressId)
-        REFERENCES UserAddresses(AddressId) 
-        ON DELETE SET NULL -- nếu address bị xóa, giữ order nhưng null address
+    CONSTRAINT FK_Orders_Users FOREIGN KEY (UserId)
+        REFERENCES Users(UserId),
+    CONSTRAINT FK_Orders_UserAddresses FOREIGN KEY (ShippingAddressId)
+        REFERENCES UserAddresses(AddressId) 
+        ON DELETE SET NULL -- nếu address bị xóa, giữ order nhưng null address
 );
 GO
 
@@ -168,16 +144,16 @@ CREATE INDEX IX_Orders_ShippingAddressId ON Orders(ShippingAddressId);
 
 -- OrderDetails
 CREATE TABLE OrderDetails (
-    OrderDetailId INT IDENTITY(1,1) PRIMARY KEY,
-    OrderId INT NOT NULL,
-    ProductId INT NOT NULL,
-    Quantity INT NOT NULL,
-    UnitPrice DECIMAL(18,2) NOT NULL,
+    OrderDetailId INT IDENTITY(1,1) PRIMARY KEY,
+    OrderId INT NOT NULL,
+    ProductId INT NOT NULL,
+    Quantity INT NOT NULL,
+    UnitPrice DECIMAL(18,2) NOT NULL,
 
-    CONSTRAINT FK_OrderDetails_Orders FOREIGN KEY (OrderId)
-        REFERENCES Orders(OrderId) ON DELETE CASCADE,
-    CONSTRAINT FK_OrderDetails_Products FOREIGN KEY (ProductId)
-        REFERENCES Products(ProductId)
+    CONSTRAINT FK_OrderDetails_Orders FOREIGN KEY (OrderId)
+        REFERENCES Orders(OrderId) ON DELETE CASCADE,
+    CONSTRAINT FK_OrderDetails_Products FOREIGN KEY (ProductId)
+        REFERENCES Products(ProductId)
 );
 GO
 
@@ -185,16 +161,16 @@ CREATE INDEX IX_OrderDetails_OrderId ON OrderDetails(OrderId);
 
 -- OrderAddressSnapshot (lưu bản sao địa chỉ tại thời điểm đặt hàng)
 CREATE TABLE OrderAddressSnapshot (
-    OrderId INT PRIMARY KEY,
-    FullName NVARCHAR(150) NOT NULL,
-    PhoneNumber NVARCHAR(20) NOT NULL,
-    AddressLine NVARCHAR(255) NOT NULL,
-    Ward NVARCHAR(100) NULL,
-    District NVARCHAR(100) NULL,
-    City NVARCHAR(100) NULL,
+    OrderId INT PRIMARY KEY,
+    FullName NVARCHAR(150) NOT NULL,
+    PhoneNumber NVARCHAR(20) NOT NULL,
+    AddressLine NVARCHAR(255) NOT NULL,
+    Ward NVARCHAR(100) NULL,
+    District NVARCHAR(100) NULL,
+    City NVARCHAR(100) NULL,
 
-    CONSTRAINT FK_OrderAddressSnapshot_Orders FOREIGN KEY (OrderId)
-        REFERENCES Orders(OrderId) ON DELETE CASCADE
+    CONSTRAINT FK_OrderAddressSnapshot_Orders FOREIGN KEY (OrderId)
+        REFERENCES Orders(OrderId) ON DELETE CASCADE
 );
 GO
 
@@ -204,7 +180,7 @@ GO
 
 -- Categories
 INSERT INTO Categories (CategoryName, [Description])
-VALUES 
+VALUES 
 (N'Sport Shoes', N'Shoes for running, gym, and training...'),
 (N'Sportswear', N'Stretchy, cool, moisture-wicking materials'),
 (N'Backpacks', N'Convenient for training or travel'),
@@ -218,19 +194,16 @@ GO
 
 -- Users (một admin và một customer mẫu)
 INSERT INTO Users (FullName, Email, [Password], RoleId, PhoneNumber)
-VALUES 
+VALUES 
 (N'Admin System', 'admin@sportshop.local', 'HASHED_PASSWORD_ADMIN', 1, '0900000000'),
 (N'Nguyễn Văn A', 'nguyenvana@example.com', 'HASHED_PASSWORD_USER', 2, '0901234567');
 GO
 
--- KeyTokens (ví dụ) - cần Private/Public thực tế
-INSERT INTO KeyTokens (UserId, PrivateKey, PublicKey, CurrentRefreshToken)
-VALUES (1, 'PRIVATE_KEY_SAMPLE', 'PUBLIC_KEY_SAMPLE', 'REFRESH_TOKEN_SAMPLE');
-GO
+-- **ĐÃ XÓA: INSERT INTO KeyTokens (ví dụ)**
 
 -- Products
 INSERT INTO Products (ProductName, CategoryId, BrandId, Price, StockQuantity, [Description], ImageURL)
-VALUES 
+VALUES 
 (N'Nike Air Zoom Shoes', 1, 1, 2500000, 20, N'Premium running shoes', 'nike_air_zoom.jpg'),
 (N'Adidas Men Sport Shirt', 2, 2, 550000, 50, N'Good sweat absorption', 'adidas_shirt.jpg'),
 (N'Puma Gym Backpack', 3, 3, 450000, 30, N'Durable, waterproof design', 'puma_bag.jpg');
@@ -262,28 +235,21 @@ JOIN UserAddresses ua ON o.ShippingAddressId = ua.AddressId
 WHERE o.OrderId = 1;
 GO
 
--- ApiKeys sample
-INSERT INTO ApiKeys ([Key], [Status], [Permissions])
-VALUES (
-  'df1fd93e760ad6c176cb520c320a9f6f39d10383f51a2566d66c3c6fbe0476613abd7aa61eaad07f492b5901abff379d84d9180b394aefdb55a7e0f91ea39214',
-  1,
-  '["0000","1111"]'
-);
-GO
+-- **ĐÃ XÓA: ApiKeys sample**
 
 ---------------------------------------------------
 -- 5. GỢI Ý VỀ IMPLEMENTATION (ở phía ứng dụng)
 ---------------------------------------------------
 /*
 - Khi user đặt hàng:
-  1) Chọn 1 AddressId từ UserAddresses (hoặc nhập địa chỉ mới -> tạo UserAddresses mới).
-  2) Tạo record trong Orders (lưu ShippingAddressId).
-  3) Tạo OrderDetails.
-  4) Copy toàn bộ thông tin địa chỉ vào OrderAddressSnapshot (để lịch sử bất biến).
-  ==> Thực hiện trong TRANSACTION để đảm bảo consistency.
+  1) Chọn 1 AddressId từ UserAddresses (hoặc nhập địa chỉ mới -> tạo UserAddresses mới).
+  2) Tạo record trong Orders (lưu ShippingAddressId).
+  3) Tạo OrderDetails.
+  4) Copy toàn bộ thông tin địa chỉ vào OrderAddressSnapshot (để lịch sử bất biến).
+  ==> Thực hiện trong TRANSACTION để đảm bảo consistency.
 
-- Nếu muốn xóa địa chỉ (UserAddresses): 
-  - Do Orders.ShippingAddressId có ON DELETE SET NULL, các order cũ không mất, nhưng bạn đã có snapshot để hiển thị.
+- Nếu muốn xóa địa chỉ (UserAddresses): 
+  - Do Orders.ShippingAddressId có ON DELETE SET NULL, các order cũ không mất, nhưng bạn đã có snapshot để hiển thị.
 - Có thể thêm trigger hoặc logic để đảm bảo chỉ 1 address có IsDefault = 1 cho mỗi user.
 */
 
